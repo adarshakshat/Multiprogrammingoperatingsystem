@@ -5,8 +5,8 @@
 
 using namespace std;
 
-ifstream fin;
-ofstream fout;
+ifstream inputfile;
+ofstream outputfile;
 int SI;
 class memory
 {
@@ -25,27 +25,27 @@ class memory
 			IC=0;
 			C=false;
 		}
-		string get_mem(int pos)
+		string getRow(int pos)
 		{
 			string temp="";
 			for(int i=0;i<4;i++)
 				temp+=mem[pos][i];
 			return temp;
 		}
-		void set_mem(string s, int pos)
+		void setRow(string s, int pos)
 		{
 
 			for(int i=0;i<4;i++)
 				mem[pos][i]=s[i];
 		}
-		void get_program_cards()
+		void getJob()
 		{
 			int flag=0;
 			for(int i=0;i<100;i++)
 			{
 				for(int j=0;j<=3;j++)
 				{
-					fin>>ch;
+					inputfile>>ch;
 					mem[i][j]=ch;
 					if(mem[i][0]=='H')
 					{
@@ -70,9 +70,9 @@ class memory
 						break;
 					}
 					else
-						fout<<mem[i][j];
+						outputfile<<mem[i][j];
 				}
-				fout<<endl;
+				outputfile<<endl;
 				if (flag)
 					break;
 			}
@@ -163,14 +163,14 @@ class cpu
 					//cout<<"SR";
 					fetched_R=m_obj.get_R();
 					int pos=s_to_i(operand);
-					m_obj.set_mem(fetched_R, pos);
+					m_obj.setRow(fetched_R, pos);
 				}
 				else if (!(opreator.compare("CR")))
 				{
 					//cout<<"CR";
 					fetched_R=m_obj.get_R();
 					int pos=s_to_i(operand);
-					compare_string=m_obj.get_mem(pos);
+					compare_string=m_obj.getRow(pos);
 					if(fetched_R.compare(compare_string)==0)
 						m_obj.set_C(true);
 					else
@@ -213,7 +213,7 @@ class cpu
 				string s;
 				int pos=s_to_i(operand);
 				pos=(pos/10)*10;
-				getline(fin,s);
+				getline(inputfile,s);
 				if(!s.empty() && s[s.size()-1]=='\r')
 					s.erase(s.size()-1);
 				int len=s.length(),start=0,i;
@@ -225,7 +225,7 @@ class cpu
 					else	
 						s1=s.substr(start,4);
 					start+=4;
-					m_obj.set_mem(s1,i);
+					m_obj.setRow(s1,i);
 				}
 			}
 			else if(SI==2)
@@ -235,7 +235,7 @@ class cpu
 				string ans="",temp="";
 				for(int i=pos;i<pos+10;i++)
 				{
-					temp=m_obj.get_mem(i);
+					temp=m_obj.getRow(i);
 					for(int j=0;j<4;j++)
 					{
 						if(temp[j]=='\0' || temp[j]=='$')
@@ -248,27 +248,28 @@ class cpu
 					if(flag)
 						break;
 				}
-				fout<<ans<<endl;
+				outputfile<<ans<<endl;
 			}
 			else
 			{
 				terminate=true;
-				fout<<endl<<endl;
+				outputfile<<endl<<endl;
 			}
 		}
 };
+cpu exe;
+
 void run(char *filename){
-    fin.open(filename);
-	fout.open("job1ALL_op.txt");
+    inputfile.open(filename);
+	outputfile.open("output.txt");
 	string s,s1;
-	cpu exe;
-	while(!(fin.eof()))
+	while(!(inputfile.eof()))
 	{
-		getline(fin,s);
+		getline(inputfile,s);
 		if(s.find("$AMJ")!=-1)
 		{
 			m_obj.reset();
-			m_obj.get_program_cards();
+			m_obj.getJob();
 		//	m_obj.print_mem();
 			continue;
 		}
@@ -277,8 +278,8 @@ void run(char *filename){
 		else if(s.find("$END")!=-1)
 			continue;
 	}
-	fin.close();
-	fout.close();
+	inputfile.close();
+	outputfile.close();
 	
 }
 
