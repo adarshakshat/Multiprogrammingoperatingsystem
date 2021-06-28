@@ -15,8 +15,8 @@ By Group #5
 - Vitual Machine
 - Lexer
 # Progress
-- [ ] Stage 1
-  - [ ] Vitual Machine
-  - [ ] Lexer
+- [X] Stage 1
+  - [X] Storage Class
+  - [X] Virtual Machine
 - [ ] Stage 2
 
