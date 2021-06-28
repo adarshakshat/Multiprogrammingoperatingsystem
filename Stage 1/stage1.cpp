@@ -8,10 +8,10 @@ using namespace std;
 ifstream inputfile;
 ofstream outputfile;
 int SI;
-class memory
+class Storage
 {
 	private:
-		char mem[100][4];
+		char memory[100][4];
 		char ch;
 		string IR,R;
 		int IC;
@@ -20,7 +20,7 @@ class memory
 	public:
 		void reset()
 		{
-			memset(mem,'$',sizeof(char)*100*4);
+			memset(memory,'$',sizeof(char)*100*4);
 			IR=R="";
 			IC=0;
 			C=false;
@@ -29,14 +29,14 @@ class memory
 		{
 			string temp="";
 			for(int i=0;i<4;i++)
-				temp+=mem[pos][i];
+				temp+=memory[pos][i];
 			return temp;
 		}
 		void setRow(string s, int pos)
 		{
 
 			for(int i=0;i<4;i++)
-				mem[pos][i]=s[i];
+				memory[pos][i]=s[i];
 		}
 		void getJob()
 		{
@@ -46,34 +46,14 @@ class memory
 				for(int j=0;j<=3;j++)
 				{
 					inputfile>>ch;
-					mem[i][j]=ch;
-					if(mem[i][0]=='H')
+					memory[i][j]=ch;
+					if(memory[i][0]=='H')
 					{
 						flag=1;
 						break;
 					}
 				}
 				if(flag)
-					break;
-			}
-		}
-		void print_mem()
-		{
-			int flag=0;
-			for(int i=0;i<100;i++)
-			{
-				for(int j=0;j<4;j++)
-				{
-					if (mem[i][j]=='$')
-					{
-						flag=1;
-						break;
-					}
-					else
-						outputfile<<mem[i][j];
-				}
-				outputfile<<endl;
-				if (flag)
 					break;
 			}
 		}
@@ -94,7 +74,7 @@ class memory
 			IR="";
 			for(int i=0;i<4;i++)
 			{
-				IR+=mem[IC][i];
+				IR+=memory[IC][i];
 			}
 		}
 		string get_IR()
@@ -105,7 +85,7 @@ class memory
 		{
 			R="";
 			for(int i=0;i<4;i++)
-				R+=mem[pos][i];
+				R+=memory[pos][i];
 		}
 		string get_R()
 		{
@@ -120,98 +100,89 @@ class memory
 			return C;
 		}
 };
-memory m_obj;
+Storage memory;
 
 
 
-class cpu
+class VirtualMachine
 {
 	private:
-		//memory m_obj;
 		int fetched_IC;
 		bool terminate,fetched_C;
 		string fetched_IR,operand,opreator,fetched_R,compare_string;
 	public:
-		int s_to_i(string operand)
+		int operandtoline(string operand)
 		{
 			return ((int)operand[0]-48)*10+((int)operand[1]-48);
 		}
-		void startexe()
+		void FETCH()
 		{
-			m_obj.set_IC();
-			PROGRAM();
+			memory.set_IC();
+			DECODE();
 		}		
-		void PROGRAM()
+		void DECODE()
 		{
 			terminate=false;
 			while(!terminate)
 			{
-				fetched_IC = m_obj.get_IC();
-				m_obj.set_IR(fetched_IC);
-				fetched_IR=m_obj.get_IR();
+				fetched_IC = memory.get_IC();
+				memory.set_IR(fetched_IC);
+				fetched_IR=memory.get_IR();
 				opreator=fetched_IR.substr(0,2);
 				operand=fetched_IR.substr(2,2);
-				//cout<<fetched_IR;
 				if(!(opreator.compare("LR")))
 				{
-					//cout<<"LR";
-					int pos=s_to_i(operand);
-					m_obj.set_R(pos);
+					int pos=operandtoline(operand);
+					memory.set_R(pos);
 				}
 				else if (!(opreator.compare("SR")))
 				{
-					//cout<<"SR";
-					fetched_R=m_obj.get_R();
-					int pos=s_to_i(operand);
-					m_obj.setRow(fetched_R, pos);
+					fetched_R=memory.get_R();
+					int pos=operandtoline(operand);
+					memory.setRow(fetched_R, pos);
 				}
 				else if (!(opreator.compare("CR")))
 				{
-					//cout<<"CR";
-					fetched_R=m_obj.get_R();
-					int pos=s_to_i(operand);
-					compare_string=m_obj.getRow(pos);
+					fetched_R=memory.get_R();
+					int pos=operandtoline(operand);
+					compare_string=memory.getRow(pos);
 					if(fetched_R.compare(compare_string)==0)
-						m_obj.set_C(true);
+						memory.set_C(true);
 					else
-						m_obj.set_C(false);
+						memory.set_C(false);
 				}
 				else if (!(opreator.compare("BT")))
 				{
-					//cout<<"BT";
-					fetched_C=m_obj.get_C();
+					fetched_C=memory.get_C();
 					if(fetched_C)
 					{
-						int pos=s_to_i(operand);
-						m_obj.set_IC(pos);
+						int pos=operandtoline(operand);
+						memory.set_IC(pos);
 					}
 				}
 				else if (!(opreator.compare("GD")))
 				{
 					SI=1;
-					//cout<<"GD";
-					MOS();
+					EXCUTE();
 				}
 				else if (!(opreator.compare("PD")))
 				{
-					//cout<<"PD";
 					SI=2;
-					MOS();
+					EXCUTE();
 				}
 				else
 				{
-					//cout<<"H";
 					SI=3;
-					MOS();
+					EXCUTE();
 				}
 			}
 		}
-		void MOS()
+		void EXCUTE()
 		{
 			if(SI==1)
 			{
 				string s;
-				int pos=s_to_i(operand);
+				int pos=operandtoline(operand);
 				pos=(pos/10)*10;
 				getline(inputfile,s);
 				if(!s.empty() && s[s.size()-1]=='\r')
@@ -225,17 +196,17 @@ class cpu
 					else	
 						s1=s.substr(start,4);
 					start+=4;
-					m_obj.setRow(s1,i);
+					memory.setRow(s1,i);
 				}
 			}
 			else if(SI==2)
 			{
-				int pos=s_to_i(operand),flag=0;
+				int pos=operandtoline(operand),flag=0;
 				pos=(pos/10)*10;
 				string ans="",temp="";
 				for(int i=pos;i<pos+10;i++)
 				{
-					temp=m_obj.getRow(i);
+					temp=memory.getRow(i);
 					for(int j=0;j<4;j++)
 					{
 						if(temp[j]=='\0' || temp[j]=='$')
@@ -257,7 +228,7 @@ class cpu
 			}
 		}
 };
-cpu exe;
+VirtualMachine virtualmachine;
 
 void run(char *filename){
     inputfile.open(filename);
@@ -268,13 +239,12 @@ void run(char *filename){
 		getline(inputfile,s);
 		if(s.find("$AMJ")!=-1)
 		{
-			m_obj.reset();
-			m_obj.getJob();
-		//	m_obj.print_mem();
+			memory.reset();
+			memory.getJob();
 			continue;
 		}
 		else if(s.find("$DTA")!=-1)
-			exe.startexe();
+			virtualmachine.FETCH();
 		else if(s.find("$END")!=-1)
 			continue;
 	}
@@ -285,12 +255,10 @@ void run(char *filename){
 
 int main(int argc, char *argv[])
 {   
-    //std::cout<<argc<<"\n"<<argv[1];
     if (argc < 2) {
-		cout  << argv[0] << " Requires: "<< " an Input file Name in argument\n" << endl;
+		cout  << argv[0] << " Requires an Input file Name in argument\n" << endl;
 		return 0;
 	}
-    //call Run function with filename as argument
     run(argv[1]);
 	return 0;
 }
