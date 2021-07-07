@@ -7,7 +7,9 @@ By Group #5
 ## Ishita Dixit
 
 ## Altabei Abdullah
+
 ## Hamid
+
 ## Amgad
 
 ### Features
@@ -17,6 +19,6 @@ By Group #5
 # Progress
 - [X] Stage 1
   - [X] Storage Class
-  - [X] Virtual Machine
+  - [X] Virtual Machine Class
 - [ ] Stage 2
 
