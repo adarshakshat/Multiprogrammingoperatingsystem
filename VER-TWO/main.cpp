@@ -30,7 +30,7 @@ void VirtualMachine::GDCOMMAND(int row)
         else
             s1 = s.substr(start, 4);
         start += 4;
-        memory.setRow(s1, i);
+        mymemory.setRow(s1, i);
     }
 }
 void VirtualMachine::PDCOMMAND(int row)
@@ -40,7 +40,7 @@ void VirtualMachine::PDCOMMAND(int row)
     string ans = "", temp = "";
     for (int i = row; i < row + 10; i++)
     {
-        temp = memory.getRow(i);
+        temp = mymemory.getRow(i);
         for (int j = 0; j < 4; j++)
         {
 
@@ -59,30 +59,30 @@ void VirtualMachine::PDCOMMAND(int row)
 
 void VirtualMachine::LRCOMMAND(int row)
 {
-    memory.setR(row);
+    mymemory.setR(row);
 }
 
 void VirtualMachine::SRCOMMAND(int row)
 {
-    fetched_R = memory.getR();
-    memory.setRow(fetched_R, row);
+    fetched_R = mymemory.getR();
+    mymemory.setRow(fetched_R, row);
 }
 
 void VirtualMachine::CRCOMMAND(int row)
 {
-    fetched_R = memory.getR();
-    compare_string = memory.getRow(row);
+    fetched_R = mymemory.getR();
+    compare_string = mymemory.getRow(row);
     if (fetched_R.compare(compare_string) == 0)
-        memory.setC(true);
+        mymemory.setC(true);
     else
-        memory.setC(false);
+        mymemory.setC(false);
 }
 
 void VirtualMachine::BTCOMMAND(int row)
 {
-    fetched_C = memory.getC();
+    fetched_C = mymemory.getC();
     if (fetched_C)
-        memory.setIC(row);
+        mymemory.setIC(row);
 }
 
 int VirtualMachine::operandToLine(std::string operand)
@@ -105,17 +105,17 @@ string memory::fetchRow(int pos)
 {
     string temp = "";
     for (int i = 0; i < 4; i++)
-        temp += mem[pos][i];
+        temp += mymemory[pos][i];
     return temp;
 }
 void memory::setRow(string s, int pos)
 {
     for (int i = 0; i < 4; i++)
-        mem[pos][i] = s[i];
+        mymemory[pos][i] = s[i];
 }
 int memory::pointerToPageTable()
 {
-    return page_table_ptr;
+    return tablePointer;
 }
 void run(char *filename)
 {
@@ -127,11 +127,11 @@ void run(char *filename)
         getline(inputfile, s);
         if (s.find("$AMJ") != -1)
         {
-            memory.init();
-            memory.load();
+            //Load program Cards here
             continue;
         }
         else if (s.find("$DTA") != -1)
+            //Run Commands
             virtualmachine.FETCH();
         else if (s.find("$END") != -1)
             continue;

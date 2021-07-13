@@ -7,9 +7,9 @@ class memory
 {
 private:
     /* data */
-    char mem[300][4];
+    char mymemory[300][4];
 	char ch;
-	int page_table_ptr;
+	int tablePointer;
 public:
     void init();
     std::string fetchRow(int row);
