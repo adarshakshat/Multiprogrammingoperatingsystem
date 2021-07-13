@@ -13,18 +13,21 @@ class cpu{
 		char IR[4],R[4],IC[2];
 		bool C,run_mos;
     public:
-    int operandToLine(std::string operand);
-    void setLimits(std::string limits);
+    //Getters
+    int getIC();
+    std::string getIR();
+    std::string getR();
+    bool getC();
+    //Setters
     void setIC();
     void setIC(int row);
-    int getIC();
-    void incIC();
     void setIR(int IC);
-    std::string getIR();
     void setR(int row);
-    std::string getR();
     void setC(bool value);
-    bool getC();
+    //Member functions
+    int operandToLine(std::string operand);
+    void setLimits(std::string limits);
+    void incIC();
     int translateAddress(int address);
     int translateAddress(std::string str);
     void startexe();
