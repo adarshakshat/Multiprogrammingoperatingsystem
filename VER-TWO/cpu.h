@@ -14,24 +14,25 @@ class cpu{
 		bool C,run_mos;
     public:
     //Getters
-    int getIC();
-    std::string getIR();
-    std::string getR();
-    bool getC();
+    int ICgetter();
+    std::string IRgetter();
+    std::string Rgetter();
+    bool Cgetter();
     //Setters
-    void setIC();
-    void setIC(int row);
-    void setIR(int IC);
-    void setR(int row);
-    void setC(bool value);
+    void ICsetter();
+    void ICsetter(int row);
+    void IRsetter(int IC);
+    void Rsetter(int row);
+    void Csetter(bool value);
     //Member functions
     int operandToLine(std::string operand);
-    void setLimits(std::string limits);
+    void limitsetter(std::string limits);
     void incIC();
     int translateAddress(int address);
     int translateAddress(std::string str);
-    void startexe();
-    void mos();
+    void FETCH();
+    void DECODE();
+    void MOS();
 };
 
 

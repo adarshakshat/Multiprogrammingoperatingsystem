@@ -25,8 +25,6 @@ public:
     void pageTable(int row,int pgnum);
     //store_card()
     void cardStore();
-    //void print_mem()
-    void memoryPrint();
 };
 
 
