@@ -25,6 +25,21 @@ private:
   bool C, run_mos;
 
 public:
+  //Member functions
+  void GDCOMMAND(int row);
+  void PDCOMMAND(int row);
+  void SRCOMMAND(int row);
+  void LRCOMMAND(int row);
+  void CRCOMMAND(int row);
+  void BTCOMMAND(int row);
+  int operandToLine(std::string operand);
+  void limitsetter(std::string limits);
+  void incIC();
+  int translateAddress(int address);
+  int translateAddress(std::string str);
+  void FETCH();
+  void DECODE();
+  void MOS();
   //Getters
   int ICgetter();
   std::string IRgetter();
@@ -36,21 +51,7 @@ public:
   void IRsetter(int IC);
   void Rsetter(int row);
   void Csetter(bool value);
-  //Member functions
-  int operandToLine(std::string operand);
-  void limitsetter(std::string limits);
-  void incIC();
-  int translateAddress(int address);
-  int translateAddress(std::string str);
-  void GDCOMMAND(int row);
-  void PDCOMMAND(int row);
-  void SRCOMMAND(int row);
-  void LRCOMMAND(int row);
-  void CRCOMMAND(int row);
-  void BTCOMMAND(int row);
-  void FETCH();
-  void DECODE();
-  void MOS();
+  
 };
 
 #endif
