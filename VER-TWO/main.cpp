@@ -40,7 +40,7 @@ void VirtualMachine::PDCOMMAND(int row)
     string ans = "", temp = "";
     for (int i = row; i < row + 10; i++)
     {
-        temp = mymemory.getRow(i);
+        temp = mymemory.fetchRow(i);
         for (int j = 0; j < 4; j++)
         {
 
@@ -59,7 +59,7 @@ void VirtualMachine::PDCOMMAND(int row)
 
 void VirtualMachine::LRCOMMAND(int row)
 {
-    mymemory.setR(row);
+    mymemory.setRow(row);
 }
 
 void VirtualMachine::SRCOMMAND(int row)
@@ -71,7 +71,7 @@ void VirtualMachine::SRCOMMAND(int row)
 void VirtualMachine::CRCOMMAND(int row)
 {
     fetched_R = mymemory.getR();
-    compare_string = mymemory.getRow(row);
+    compare_string = mymemory.fetchRow(row);
     if (fetched_R.compare(compare_string) == 0)
         mymemory.setC(true);
     else
